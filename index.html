@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <title>영등포구 파크골프장 V14.2</title>
+    <title>양천생태 파크골프장 V14.2</title>
     <style>
         :root { 
             --primary-color: #006400; --accent-color: #ff8c00; --bg-color: #f0f4f0; 
@@ -31,8 +31,7 @@
         .btn-outline { background-color: var(--btn-outline-bg); color: var(--btn-outline-text); border: 1px solid var(--table-border); }
         .btn-nav { background-color: #333; color: white; padding: 6px 10px; border-radius: 5px; border: none; font-size: 13px; }
         .btn-share { background-color: #FEE500; color: #3C1E1E; }
-        .btn-select { width:32%; padding:10px; background:var(--card-bg); border:1px solid var(--table-border); border-radius:5px; color: var(--text-color); font-weight:bold; }
-        .btn-select.selected { background:var(--accent-color); border-color:var(--accent-color); color: white;}
+        .btn-select { width:100%; padding:10px; background:var(--accent-color); border:1px solid var(--accent-color); border-radius:5px; color: white; font-weight:bold; pointer-events: none; }
         input, select { width: 100%; padding: 10px; margin-bottom: 5px; border: 1px solid var(--table-border); border-radius: 5px; box-sizing: border-box; background-color: var(--card-bg); color: var(--text-color); font-weight:bold; font-size:15px; }
         .hole-info-card { background-color: var(--card-bg); padding: 10px; border-radius: 10px; margin-bottom: 5px; text-align: center; border: 2px solid var(--primary-color); }
         .player-row { background-color: var(--card-bg); border-radius: 8px; display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; padding: 8px 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.2); }
@@ -69,7 +68,7 @@
 <body>
 
 <div id="screen-main" class="screen active">
-    <h1>영등포구 파크골프장</h1>
+    <h1>양천생태 파크골프장</h1>
     <div class="main-photo-container">
         <img src="20764.jpg" id="park-img" alt="파크골프장 전경" class="main-photo" onerror="this.parentNode.style.backgroundColor='#eee'; this.style.display='none';">
     </div>
@@ -86,9 +85,7 @@
     <h1>경기 설정</h1>
     <h3>1. 코스 선택</h3>
     <div style="display:flex; justify-content:space-between; margin-bottom:10px;">
-        <button class="btn-select selected" id="opt-AB" onclick="selectCourseMode('AB')">A+B</button>
-        <button class="btn-select" id="opt-CD" onclick="selectCourseMode('CD')">C+D</button>
-        <button class="btn-select" id="opt-ABCD" onclick="selectCourseMode('ABCD')">36홀</button>
+        <button class="btn-select">27홀 전체 코스 (A+B+C)</button>
     </div>
     <h3>2. 시작 홀 (샷건)</h3>
     <select id="start-hole-select"></select>
@@ -110,7 +107,7 @@
     <div class="hole-info-card">
         <div id="hole-badge" style="font-weight:bold; color:var(--primary-color); font-size:18px;">A 코스 1번홀</div>
         <div id="hole-detail" style="font-size:22px; font-weight:bold; color:#f44336;">Par 4</div>
-        <div style="font-size:12px; color:var(--text-muted);">진행: <span id="progress-text">1/18</span></div>
+        <div style="font-size:12px; color:var(--text-muted);">진행: <span id="progress-text">1/27</span></div>
     </div>
     <div id="score-board" style="overflow-y:auto; flex-grow:1;"></div>
     <div style="margin-top:auto; padding-top:10px;">
@@ -155,7 +152,6 @@
     </div>
     <div id="history-list" style="overflow-y:auto; flex:1; padding-bottom:10px;"></div>
     <div style="margin-top:auto;">
-        <!-- 기록표 이미지 공유 버튼 -->
         <button class="btn-large btn-share" onclick="shareHistoryList()">기록표 이미지 공유</button>
         <button class="btn-large btn-confirm" style="animation:none;" onclick="deleteAllHistory()">전체 기록 삭제</button>
         <button class="btn-large btn-secondary" onclick="showScreen('screen-main')">메인으로</button>
@@ -167,7 +163,6 @@
     <div style="text-align:center; margin-bottom:10px; font-size:12px; color:var(--text-muted);">개별 홀 상세 점수입니다.</div>
     <div id="past-grid-container" style="overflow-y:auto; flex-grow:1; padding-bottom:10px;"></div>
     <div style="margin-top:auto;">
-        <!-- 상세표 이미지 공유 버튼 -->
         <button class="btn-large btn-share" onclick="sharePastScorecard()">상세표 이미지 공유</button>
         <button class="btn-large btn-secondary" onclick="showScreen('screen-history')">뒤로 (목록)</button>
     </div>
@@ -194,8 +189,8 @@
 
 <script>
 /* ── 테마 ── */
-function initTheme(){var t=localStorage.getItem('ydp_theme')||'light';document.documentElement.setAttribute('data-theme',t);updateThemeButton(t);}
-function toggleTheme(){var c=document.documentElement.getAttribute('data-theme'),n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('ydp_theme',n);updateThemeButton(n);}
+function initTheme(){var t=localStorage.getItem('yc_theme')||'light';document.documentElement.setAttribute('data-theme',t);updateThemeButton(t);}
+function toggleTheme(){var c=document.documentElement.getAttribute('data-theme'),n=c==='dark'?'light':'dark';document.documentElement.setAttribute('data-theme',n);localStorage.setItem('yc_theme',n);updateThemeButton(n);}
 function updateThemeButton(t){var b=document.getElementById('theme-btn');if(t==='dark'){b.innerText='라이트 모드';b.style.backgroundColor='#f4f4f4';b.style.color='#333';}else{b.innerText='다크 모드';b.style.backgroundColor='#333';b.style.color='#fff';}}
 window.onload=initTheme;
 
@@ -205,15 +200,14 @@ function showModal(msg,showCancel,onConfirm){document.getElementById('modal-text
 document.getElementById('modal-cancel').onclick=function(){document.getElementById('custom-modal').style.display='none';};
 document.getElementById('modal-ok').onclick=function(){document.getElementById('custom-modal').style.display='none';if(currentModalAction)currentModalAction();};
 
-/* ── 코스 데이터 ── */
+/* ── 코스 데이터 (양천생태 파크골프장 27홀 제원) ── */
 var courseData={
-    A:[{p:4,d:60},{p:3,d:45},{p:3,d:55},{p:4,d:100},{p:5,d:125},{p:4,d:66},{p:4,d:75},{p:3,d:45},{p:3,d:50}],
-    B:[{p:3,d:58},{p:4,d:100},{p:4,d:68},{p:3,d:50},{p:4,d:60},{p:3,d:55},{p:4,d:67},{p:5,d:120},{p:3,d:58}],
-    C:[{p:3,d:45},{p:4,d:77},{p:4,d:71},{p:3,d:61},{p:4,d:75},{p:3,d:59},{p:3,d:57},{p:4,d:71},{p:5,d:105}],
-    D:[{p:3,d:51},{p:4,d:63},{p:4,d:67},{p:3,d:45},{p:3,d:56},{p:4,d:90},{p:5,d:120},{p:4,d:83},{p:3,d:45}]
+    A:[{p:5,d:150},{p:3,d:45},{p:4,d:100},{p:3,d:60},{p:4,d:95},{p:3,d:60},{p:3,d:65},{p:4,d:75},{p:4,d:70}],
+    B:[{p:4,d:100},{p:3,d:60},{p:4,d:60},{p:4,d:100},{p:3,d:60},{p:4,d:85},{p:3,d:65},{p:3,d:55},{p:5,d:150}],
+    C:[{p:4,d:75},{p:3,d:50},{p:5,d:130},{p:3,d:60},{p:4,d:95},{p:4,d:100},{p:3,d:60},{p:3,d:53},{p:4,d:105}]
 };
 
-var currentMode='AB',activeHoles=[],currentHoleIndex=0,players=[],gameDate='',isConfirmed=false,roundCount=1;
+var currentMode='ABC',activeHoles=[],currentHoleIndex=0,players=[],gameDate='',isConfirmed=false,roundCount=1;
 /* 결과 공유용 전역변수 */
 var _lastRanked=null,_lastRnds=null;
 /* ★ 현재 보고 있는 과거 기록 ID ★ */
@@ -224,29 +218,26 @@ function showToast(msg){var t=document.getElementById('toast-msg');t.innerText=m
 function localDateKr(){var d=new Date();return d.getFullYear()+'. '+String(d.getMonth()+1)+'. '+String(d.getDate())+'. ';}
 
 function setupGame(){
-    var ln=JSON.parse(localStorage.getItem('ydp_last_names')||'["나","김철수","이영희","박순자"]');
+    var ln=JSON.parse(localStorage.getItem('yc_last_names')||'["나","김철수","이영희","박순자"]');
     ['p1','p2','p3','p4'].forEach(function(id,i){document.getElementById(id).value=ln[i];});
-    selectCourseMode('AB');showScreen('screen-setup');
+    updateStartHoleOptions();
+    showScreen('screen-setup');
 }
-function selectCourseMode(mode){
-    currentMode=mode;document.querySelectorAll('.btn-select').forEach(function(b){b.classList.remove('selected');});
-    document.getElementById('opt-'+mode).classList.add('selected');updateStartHoleOptions();
-}
+
 function updateStartHoleOptions(){
     var sel=document.getElementById('start-hole-select');sel.innerHTML='';var tmp=[];
-    if(currentMode.includes('A'))courseData.A.forEach(function(h,i){tmp.push({c:'A',id:i+1});});
-    if(currentMode.includes('B'))courseData.B.forEach(function(h,i){tmp.push({c:'B',id:i+1});});
-    if(currentMode.includes('C'))courseData.C.forEach(function(h,i){tmp.push({c:'C',id:i+1});});
-    if(currentMode.includes('D'))courseData.D.forEach(function(h,i){tmp.push({c:'D',id:i+1});});
+    courseData.A.forEach(function(h,i){tmp.push({c:'A',id:i+1});});
+    courseData.B.forEach(function(h,i){tmp.push({c:'B',id:i+1});});
+    courseData.C.forEach(function(h,i){tmp.push({c:'C',id:i+1});});
     tmp.forEach(function(h,idx){var o=document.createElement('option');o.value=idx;o.text=h.c+'코스 '+h.id+'홀 부터'+(idx===0?' (기본)':'');sel.appendChild(o);});
 }
 function startGame(){
     var raw=[];
-    ['A','B','C','D'].forEach(function(c){if(currentMode.includes(c))courseData[c].forEach(function(h,i){raw.push({p:h.p,d:h.d,id:i+1,c:c,r:1});});});
+    ['A','B','C'].forEach(function(c){ courseData[c].forEach(function(h,i){raw.push({p:h.p,d:h.d,id:i+1,c:c,r:1});}); });
     var si=parseInt(document.getElementById('start-hole-select').value);
     activeHoles=raw.slice(si).concat(raw.slice(0,si));
     var names=['p1','p2','p3','p4'].map(function(id){return document.getElementById(id).value||'선수';});
-    localStorage.setItem('ydp_last_names',JSON.stringify(names));
+    localStorage.setItem('yc_last_names',JSON.stringify(names));
     players=names.map(function(n){return{name:n,scores:activeHoles.map(function(h){return h.p;}),confirmed:new Array(activeHoles.length).fill(false)};});
     currentHoleIndex=0;isConfirmed=false;roundCount=1;gameDate=new Date().toISOString().split('T')[0];
     renderGameScreen();showScreen('screen-game');
@@ -294,7 +285,7 @@ function prevHole(){if(currentHoleIndex>0){currentHoleIndex--;renderGameScreen()
 function extendGame(){
     showModal('다음 라운드를 시작할까요?',true,function(){
         roundCount++;
-        var hpr=0;if(currentMode.includes('A'))hpr+=9;if(currentMode.includes('B'))hpr+=9;if(currentMode.includes('C'))hpr+=9;if(currentMode.includes('D'))hpr+=9;
+        var hpr=27; // 항상 27홀 
         var base=activeHoles.slice(0,hpr);
         var nh=base.map(function(h){return{p:h.p,d:h.d,id:h.id,c:h.c,r:roundCount};});
         activeHoles=activeHoles.concat(nh);
@@ -331,7 +322,7 @@ function closeScoreboard(){showScreen('screen-game');}
 function finishGame(e){if(e){showModal('경기를 종료하고 결과를 보시겠습니까?',true,function(){processFinishGame();});}else{processFinishGame();}}
 function processFinishGame(){
     showScreen('screen-result');
-    var pc=[];if(currentMode.includes('A'))pc.push('A');if(currentMode.includes('B'))pc.push('B');if(currentMode.includes('C'))pc.push('C');if(currentMode.includes('D'))pc.push('D');
+    var pc=['A','B','C']; // 27홀 고정
     var rounds=[];for(var r=1;r<=roundCount;r++){rounds.push({r:r,courses:pc.map(function(c){return{c:c,r:r,label:c+'(R'+r+')'};})}); }
     var html='<thead><tr><th>이름</th>';
     rounds.forEach(function(rnd){rnd.courses.forEach(function(col){html+='<th>'+col.label+'</th>';});html+='<th style="background:var(--highlight-blue);">R'+rnd.r+' 합계</th>';});
@@ -352,33 +343,33 @@ function processFinishGame(){
     _lastRanked=ranked;_lastRnds=rounds;
     saveToHistory(ranked,rounds);
 }
-function saveCurrentState(){localStorage.setItem('ydp_temp_save',JSON.stringify({mode:currentMode,activeHoles:activeHoles,players:players,idx:currentHoleIndex,date:gameDate,rc:roundCount}));}
+function saveCurrentState(){localStorage.setItem('yc_temp_save',JSON.stringify({mode:currentMode,activeHoles:activeHoles,players:players,idx:currentHoleIndex,date:gameDate,rc:roundCount}));}
 function loadLastGame(){
-    var d=JSON.parse(localStorage.getItem('ydp_temp_save'));
+    var d=JSON.parse(localStorage.getItem('yc_temp_save'));
     if(!d){showModal('저장된 게임이 없습니다.',false);return;}
     currentMode=d.mode;activeHoles=d.activeHoles;players=d.players;currentHoleIndex=d.idx;gameDate=d.date;roundCount=d.rc||1;
     renderGameScreen();showScreen('screen-game');
 }
 function saveToHistory(ranked,rounds){
     var item={id:Date.now(),date:gameDate,mode:currentMode,rounds:rounds,players:ranked,activeHoles:JSON.parse(JSON.stringify(activeHoles))};
-    var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]');
-    list.unshift(item);localStorage.setItem('ydp_parkgolf_history',JSON.stringify(list));
+    var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]');
+    list.unshift(item);localStorage.setItem('yc_parkgolf_history',JSON.stringify(list));
 }
-function saveAndGoHome(){localStorage.removeItem('ydp_temp_save');showScreen('screen-main');}
+function saveAndGoHome(){localStorage.removeItem('yc_temp_save');showScreen('screen-main');}
 function showHistoryScreen(){showScreen('screen-history');filterHistory();}
 function deleteHistory(id){
     showModal('이 기록을 삭제하시겠습니까?',true,function(){
-        var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]').filter(function(x){return x.id!==id;});
-        localStorage.setItem('ydp_parkgolf_history',JSON.stringify(list));filterHistory();showToast('삭제되었습니다.');
+        var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]').filter(function(x){return x.id!==id;});
+        localStorage.setItem('yc_parkgolf_history',JSON.stringify(list));filterHistory();showToast('삭제되었습니다.');
     });
 }
 function deleteAllHistory(){
-    var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]');
+    var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]');
     if(!list.length){showModal('삭제할 기록이 없습니다.',false);return;}
-    showModal('모든 기록을 삭제하시겠습니까?',true,function(){localStorage.removeItem('ydp_parkgolf_history');filterHistory();showToast('모두 삭제되었습니다.');});
+    showModal('모든 기록을 삭제하시겠습니까?',true,function(){localStorage.removeItem('yc_parkgolf_history');filterHistory();showToast('모두 삭제되었습니다.');});
 }
 function filterHistory(){
-    var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]');
+    var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]');
     var container=document.getElementById('history-list');
     if(!list.length){container.innerHTML='<div style="text-align:center;padding:20px;color:var(--text-muted);font-weight:bold;">저장된 기록이 없습니다.</div>';return;}
     var sd=document.getElementById('search-date').value;
@@ -387,7 +378,7 @@ function filterHistory(){
     if(sn)list=list.filter(function(g){return g.players&&g.players.some(function(p){return p.name.toLowerCase().indexOf(sn)!==-1;});});
     container.innerHTML=list.map(function(g){
         var hdr='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">'
-            +'<div onclick="viewPastScorecard('+g.id+')" style="cursor:pointer;color:var(--primary-color);text-decoration:underline;font-weight:bold;font-size:15px;">'+g.date+' ('+g.mode+') 상세보기</div>'
+            +'<div onclick="viewPastScorecard('+g.id+')" style="cursor:pointer;color:var(--primary-color);text-decoration:underline;font-weight:bold;font-size:15px;">'+g.date+' (27홀) 상세보기</div>'
             +'<button class="btn-delete-small" onclick="deleteHistory('+g.id+')">삭제</button></div>';
         if(g.rounds){
             var ths='';g.rounds.forEach(function(rnd){rnd.courses.forEach(function(col){ths+='<th>'+col.label+'</th>';});ths+='<th style="background:var(--highlight-blue);">R'+rnd.r+' 합계</th>';});
@@ -404,7 +395,7 @@ function filterHistory(){
 }
 function viewPastScorecard(id){
     _currentPastId=id;
-    var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]');
+    var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]');
     var g=list.find(function(x){return x.id===id;});
     if(!g)return;
     if(!g.activeHoles||!g.players[0].rawScores){showModal('이전 버전 기록이라 상세 데이터가 없습니다.',false);return;}
@@ -477,7 +468,7 @@ function drawCanvas(secs,label,dateStr){
             ctx.fillStyle='#ffffff';
             ctx.font='bold '+(12*S)+'px sans-serif';
             ctx.textBaseline='middle'; ctx.textAlign='left';
-            ctx.fillText('영등포구 파크골프  '+label+(dateStr?' ('+dateStr+')':''), P, HD/2);
+            ctx.fillText('양천생태 파크골프  '+label+(dateStr?' ('+dateStr+')':''), P, HD/2);
             /* ── 2-pass: 실제 렌더링 ── */
             var ry=HD;
             secs.forEach(function(sec){
@@ -523,7 +514,7 @@ function drawCanvas(secs,label,dateStr){
             /* 서명 */
             ctx.fillStyle='#888888'; ctx.font=(7*S)+'px sans-serif';
             ctx.textAlign='right'; ctx.textBaseline='middle';
-            ctx.fillText(localDateKr()+'영등포구 파크골프 V14.2', W-P, ry+footerH/2);
+            ctx.fillText(localDateKr()+'양천생태 파크골프 V14.2', W-P, ry+footerH/2);
             /* ── 이미지 표시 ── */
             var dataUrl=cv.toDataURL('image/png');
             document.getElementById('sov-loading').style.display='none';
@@ -535,7 +526,7 @@ function drawCanvas(secs,label,dateStr){
                 if(!blob)return;
                 var file=new File([blob],'parkgolf_'+label+'_'+Date.now()+'.png',{type:'image/png'});
                 if(navigator.share&&navigator.canShare&&navigator.canShare({files:[file]})){
-                    navigator.share({title:'영등포구 파크골프 '+label,files:[file]})
+                    navigator.share({title:'양천생태 파크골프 '+label,files:[file]})
                         .then(function(){closeSov();showToast('공유 완료!');})
                         .catch(function(e){});
                 }
@@ -575,7 +566,7 @@ function closeSov(){
 
 /* ── [1] 기록표 공유: localStorage 직접 읽기 ── */
 function shareHistoryList(){
-    var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]');
+    var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]');
     var sd=document.getElementById('search-date').value;
     var sn=document.getElementById('search-name').value.trim().toLowerCase();
     if(sd)list=list.filter(function(g){return g.date===sd;});
@@ -607,7 +598,7 @@ function shareHistoryList(){
             cells.push({text:String(p.total||0),color:'#c62828',bold:true,bg:'#fff3e0'});
             rows.push(cells);
         });
-        secs.push({title:g.date+' ('+g.mode+')',rows:rows});
+        secs.push({title:g.date+' (27홀)',rows:rows});
     });
     if(!secs.length){showToast('공유할 기록이 없습니다.');return;}
     drawCanvas(secs,'기록조회',localDateKr());
@@ -616,7 +607,7 @@ function shareHistoryList(){
 /* ── [2] 상세표 공유: _currentPastId 저장 기록에서 직접 읽기 ── */
 function sharePastScorecard(){
     if(!_currentPastId){showToast('먼저 기록을 선택해 주세요.');return;}
-    var list=JSON.parse(localStorage.getItem('ydp_parkgolf_history')||'[]');
+    var list=JSON.parse(localStorage.getItem('yc_parkgolf_history')||'[]');
     var g=list.find(function(x){return x.id===_currentPastId;});
     if(!g||!g.activeHoles||!g.players||!g.players[0].rawScores){showToast('상세 데이터가 없습니다.');return;}
     /* 섹션 구성 */
